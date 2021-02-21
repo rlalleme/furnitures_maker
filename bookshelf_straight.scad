@@ -1,6 +1,11 @@
 include <tools.scad>
 use <sample_wood.scad>
+include <sample_book.scad>
 use <cabinet.scad>
+
+//In order to draw books and visualise them, inside sample_books.scad, change the variable value
+//Dispaly book to help at visualisation
+ADD_BOOKS=false;
 
 //Defines a bookshelf with straight shelves and (optionnal) sliding doors on the lowest level
 // shelves_height - List of shelves height, from bottom to top, (e.g. shelves_height=[30, 20, 10] defines a bookshelf with 3 shelves, of decreasing height a we go up)
@@ -10,9 +15,10 @@ use <cabinet.scad>
 // side_thickness  \
 // back_thickness   > Define the wood thickness for the sides, back and shelves
 // shelf_thickness /
-// add_doors (def: false)
+// add_doors (def: false) - Trigger the option for sliding doors on bottom level
 // door_covering - Define the length that the door share: the front door, when closed will cover the back one from this distance
 // door_recess - Define how much the front door is recessed inside the bookshelf, the back door is considered touching the front one (no gap is considered here)
+
 module bibliotheque_droite(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, add_doors=false, door_covering=0, door_recess=0) {
 	available_depth=bookshelf_depth-back_thickness;
 	shelf_depth=available_depth;
@@ -40,17 +46,22 @@ module bibliotheque_droite(shelves_height, bookshelf_width, bookshelf_depth, foo
 			ground_distance=Compute_shelf_height(level);
 			echo(str("The shelf at level ",level," will be ",ground_distance," ",unit," from ground"));
 			translate([0, 0, ground_distance]) board_lightWood(shelf_length, shelf_depth, shelf_thickness, str("shelf level ",level));
+			
+			//Add books
+			translate([0, shelf_depth, ground_distance+shelf_thickness]) Livres(shelf_length, available_depth-8, available_depth-3, shelves_height[level]-5, shelves_height[level]-1,  1, 3);
 		}
 		
 		if(add_doors){
 			//If options is selected, add sliding doors
 			translate([0, shelf_thickness+door_recess, foot_height+side_thickness]) rotate([90, 0, 0]) board_lightWood(shelf_length/2+door_covering, shelves_height[0], shelf_thickness);
 			translate([shelf_length/2-door_covering, 2*shelf_thickness+door_recess, foot_height+side_thickness]) rotate([90, 0, 0]) board_lightWood(shelf_length/2+door_covering, shelves_height[0], shelf_thickness);
+		}else{
+			//Otherwise draw books instead (if function is enabled at top level
+			translate([0, shelf_depth, Compute_height_bottom_shelf()]) Livres(shelf_length, available_depth-8, available_depth-3, shelves_height[0]-5, shelves_height[0]-1,  1, 3);
 		}
 		
 	}
 }
-
 
 bibliotheque_droite(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, add_doors=true, door_covering=3, door_recess=3);
 
