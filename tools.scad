@@ -1,4 +1,4 @@
-unit="mm";
+unit="cm";
 
 //Draw reference axis
 module drawAxis(s=1){
