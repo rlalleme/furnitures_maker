@@ -1,6 +1,13 @@
 use <sample_wood.scad>
 use <tools.scad>
 
+//Defines a cabinet
+// cabinet_height \
+// cabinet_width   > Define the cabinet dimensions (outer)
+// cabinet_depth  /
+// foot_height - Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
+// side_thickness \_ Define the wood thickness for the sides and back
+// back_thickness /
 module cabinet(cabinet_height, cabinet_width, cabinet_depth, foot_height, side_thickness, back_thickness) {
 	shelves_length=cabinet_width-2*side_thickness;
 	
