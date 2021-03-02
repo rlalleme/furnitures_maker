@@ -12,7 +12,7 @@ List of files
 | bookshelf_straight   | Bookshelf, straight shelves, optional doors     |
 |----------------------|-------------------------------------------------|
 
-If you open a file in openscad, it displays some examples.
+**If you open a file in openscad, it displays some examples, showcasing the capabilities of the file.**
 
 
 Functionnalities
