@@ -7,7 +7,21 @@ use <cabinet.scad>
 //Dispaly book to help at visualisation
 ADD_BOOKS=true;
 
+//Defines a bookshelf with straight shelves and (optionnal) sliding doors on the lowest level
+// shelves_height - List of shelves height, from bottom to top, (e.g. shelves_height=[30, 20, 10] defines a bookshelf with 3 shelves, of decreasing height a we go up)
+// bookshelf_width \_Define the bookshelf dimensions (the height is computed from the shelves height and foot height)
+// bookshelf_depth /
+// foot_height - Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
+// side_thickness  \
+// back_thickness   > Define the wood thickness for the sides, back and shelves
+// shelf_thickness /
+// niche - defines the first and last level for a niche, no niche if empty, 0 means bottom of bookshelf, and can be equal to the number of shelves for the niche to touch the top (e.g. [1, 3] means from the first to the third shelves (reaching the bottom of the fourth shelf))
+// niche_width - defines the horizontal distance inside the niche
+// niche_angle - angle for the niche, positive to bend it to the left, negative for the right
 // niche_position - between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%), any value above one will be interprated as a dimension
+// add_doors (def: false) - Trigger the option for sliding doors on bottom level
+// door_covering - Define the length that the door share: the front door, when closed will cover the back one from this distance
+// door_recess - Define how much the front door is recessed inside the bookshelf, the back door is considered touching the front one (no gap is considered here)
 
 module bookshelf_with_niche(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, niche=[], niche_width=0, niche_angle=0, niche_position=0, add_doors=false, door_covering=0, door_recess=0) {
 	available_depth=bookshelf_depth-back_thickness;
