@@ -23,6 +23,7 @@ List of files
 
 **If you open a file in openscad, it displays some examples, showcasing the capabilities of the file.**
 
+The 'sample' directory holds sample codes, and customiser. Each demo code has a corresponding image to ahve an idea of the result.
 
 Functionnalities
 ----------------
