@@ -41,8 +41,8 @@ Bookshelf - Straight
 The 'bookshelf_straight' file allows to build a bookshelf with straight shelves. It offers optionnal doors on the lowest level, and the addition of a 'niche'.
 The figure bellow demonstrates a varietty of use cases:
 
-![Samples of bookshelves](sample/bookshelf-straight.png)
-![Samples of bookshelves (with empty shelves)](sample/bookshelf-straight-empty.png)
+![Samples of bookshelves](img/bookshelf-straight.png)
+![Samples of bookshelves (with empty shelves)](img/bookshelf-straight-empty.png)
 
 _The bookshlef sample here is demonstrated with empty and full shelves, see the 'Functionnalities' above for more details._
 
@@ -69,8 +69,8 @@ Bookshelf - Diagonal
 The 'bookshelf_diagonal' file allows to build a bookshelf with a diagonal inside (with shelves).
 The figure bellow demonstrates a varietty of use cases:
 
-![Samples of bookshelves](sample/bookshelf-diagonal.png)
-![Samples of bookshelves (with empty shelves)](sample/bookshelf-diagonal-empty.png)
+![Samples of bookshelves](img/bookshelf-diagonal.png)
+![Samples of bookshelves (with empty shelves)](img/bookshelf-diagonal-empty.png)
 
 A bookshelf has the following defition and parameters:
 `bookshelf_diagonal(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, diagonal_width, diagonal_angle, diagonal_position)`
@@ -91,8 +91,8 @@ Bookshelf - Cells/Rack
 The 'bookshelf_celss' file allows to build a bookshelf with a inner walls and optional border. It has three functions depending on the level of control you want.
 The figure bellow demonstrates a varietty of use cases:
 
-![Samples of bookshelves](sample/bookshelf-cells.png)
-![Samples of bookshelves (with empty shelves)](sample/bookshelf-cells-empty.png)
+![Samples of bookshelves](img/bookshelf-cells.png)
+![Samples of bookshelves (with empty shelves)](img/bookshelf-cells-empty.png)
 
 Defines a bookshelf with straight shelves and inner walls with the following defition and parameters:
 `bookshelf_cells(shelves_height, shelves_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, border_height)`
