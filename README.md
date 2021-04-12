@@ -55,7 +55,7 @@ A bookshelf has the following defition and parameters:
 * niche - defines the first and last level for a niche, no niche if empty, 0 means bottom of bookshelf, and can be equal to the number of shelves for the niche to touch the top (e.g. [1, 3] means from the first to the third shelves (reaching the bottom of the fourth shelf))
   * niche_width - defines the horizontal distance inside the niche
   * niche_angle - angle for the niche, positive to bend it to the left, negative for the right
-  * niche_position - between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%), any value above one will be interprated as a dimension
+  * niche_position - between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%) of the available space, any value above one will be interprated as a dimension
 * add_doors (def: false) - Trigger the option for sliding doors on bottom level
   * door_covering - Define the length that the door share: the front door, when closed will cover the back one from this distance
   * door_recess - Define how much the front door is recessed inside the bookshelf, the back door is considered touching the front one (no gap is considered here)
@@ -80,4 +80,4 @@ A bookshelf has the following defition and parameters:
 * side_thickness, back_thickness, shelf_thickness: Define the wood thickness for the sides, back and shelves
 * diagonal_width: Defines the horizontal distance inside the diagonal
 * diagonal_angle: Angle for the diagonal, positive to tilt it to the left, negative for the right
-* diagonal_position: Between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%), any value above one will be interprated as a dimension (from left side)
+* diagonal_position: Between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%) of the available space, any value above one will be interprated as a dimension (from left side)

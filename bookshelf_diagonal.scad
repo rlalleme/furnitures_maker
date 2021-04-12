@@ -17,7 +17,7 @@ ADD_BOOKS=true;
 // shelf_thickness /
 // diagonal_width - Defines the horizontal distance inside the diagonal
 // diagonal_angle - Angle for the diagonal, positive to tilt it to the left, negative for the right
-// diagonal_position - Between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%), any value above one will be interprated as a dimension (from left side)
+// diagonal_position - Between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%) of the available space, any value above one will be interprated as a dimension (from left side)
 
 module bookshelf_diagonal(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, diagonal_width, diagonal_angle, diagonal_position) {
 	available_depth=bookshelf_depth-back_thickness;
@@ -45,12 +45,22 @@ module bookshelf_diagonal(shelves_height, bookshelf_width, bookshelf_depth, foot
 	//Compute diagonal sides position
 	diag_horizontal_offset=(bookshelf_height-foot_height-2*side_thickness)/tan(90-abs(diagonal_angle)); //Offset due to the diag angle
 	cut_length=shelf_thickness/cos(diagonal_angle);//Length of the cut in the wood
-	position_left_side=((diagonal_position > 1.0)?diagonal_position:(shelf_length-diagonal_width-shelf_thickness-cut_length-diag_horizontal_offset)*diagonal_position)+ //Move according the position required by user
+	diag_total_width=(bookshelf_height-foot_height-2*side_thickness)*tan(abs(diagonal_angle))+2*cut_length+diagonal_width;
+	position_left_side=(diagonal_position > 1.0)?diagonal_position:(shelf_length-diag_total_width)*diagonal_position+ //Move according the position required by user
 		((diagonal_angle>0)?diag_horizontal_offset:0); //Move the left side if tilted to the left so the top is inside the cabinet
 	position_right_side=position_left_side+diagonal_width+cut_length;
 	
-	//ADD ASSERTS ON DIAG LENGTH + DIAG_ANGLE + DIAG_WIDTH
-	assert(position_right_side+cut_length<=shelf_length, "ERROR: Diagonal does not fit inside piece of furniture, change one of: diagonal angle or width, or bookshelf width");
+	//Verify the validity of the input values
+	ERROR="ERROR: Diagonal does not fit inside piece of furniture, change one of: diagonal angle, position or width, or bookshelf width";
+	assert(diag_total_width<=shelf_length, ERROR);
+	if(diagonal_angle>0){
+		assert((position_left_side-diag_horizontal_offset)>=0, ERROR);
+		assert((position_right_side+cut_length)<=shelf_length*1.001, ERROR);
+	}else{
+		assert(position_left_side>=0, ERROR);
+		assert(position_right_side+diag_horizontal_offset+cut_length<=shelf_length*1.001, ERROR);
+	}
+// 	assert(position_right_side+cut_length<=shelf_length, "ERROR: Diagonal does not fit inside piece of furniture, change one of: diagonal angle, position or width, or bookshelf width");
 	
 	//Compute diagonal shelves length
 	diag_shelf_length=diagonal_width*cos(diagonal_angle);
@@ -131,6 +141,6 @@ module bookshelf_diagonal(shelves_height, bookshelf_width, bookshelf_depth, foot
 
 bookshelf_diagonal(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, diagonal_width=50, diagonal_angle=20, diagonal_position=0.5);
 
-translate([190, 0, 50]) bookshelf_diagonal(shelves_height=[32, 32, 32, 32], bookshelf_width=100, bookshelf_depth=37, foot_height=0, side_thickness=2, back_thickness=1.5, shelf_thickness=2, diagonal_width=20, diagonal_angle=-10, diagonal_position=1);
+translate([190, 0, 50]) bookshelf_diagonal(shelves_height=[32, 32, 32, 32], bookshelf_width=100, bookshelf_depth=37, foot_height=0, side_thickness=2, back_thickness=1.5, shelf_thickness=2, diagonal_width=20, diagonal_angle=-10, diagonal_position=30);
 
 translate([310, 0, 50]) bookshelf_diagonal(shelves_height=[32, 32, 32, 32], bookshelf_width=100, bookshelf_depth=37, foot_height=0, side_thickness=2, back_thickness=1.5, shelf_thickness=2, diagonal_width=20, diagonal_angle=0, diagonal_position=0.5);

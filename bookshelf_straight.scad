@@ -18,7 +18,7 @@ ADD_BOOKS=true;
 // niche - defines the first and last level for a niche, no niche if empty, 0 means bottom of bookshelf, and can be equal to the number of shelves for the niche to touch the top (e.g. [1, 3] means from the first to the third shelves (reaching the bottom of the fourth shelf))
 // niche_width - defines the horizontal distance inside the niche
 // niche_angle - angle for the niche, positive to tilt it to the left, negative for the right
-// niche_position - between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%), any value above one will be interprated as a dimension
+// niche_position - between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%) of the available space, any value above one will be interprated as a dimension
 // add_doors (def: false) - Trigger the option for sliding doors on bottom level
 // door_covering - Define the length that the door share: the front door, when closed will cover the back one from this distance
 // door_recess - Define how much the front door is recessed inside the bookshelf, the back door is considered touching the front one (no gap is considered here)
@@ -49,13 +49,25 @@ module bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot
 	function Compute_niche_shelves_height(level) = is_undef(niche[1])?0 : Compute_shelf_height(level) - Compute_shelf_height(niche[0]);
 	
 	//Position of niche sides
-	horizontal_niche_offset=shelf_thickness/cos(niche_angle); //Horizontal length ocrresponding to the niche agle
-	position_niche_left=(niche_position > 1.0)?niche_position:(shelf_length-niche_width)*niche_position;
-	position_niche_right=position_niche_left+niche_width+horizontal_niche_offset;
+	cut_length=shelf_thickness/cos(niche_angle); //Length of the cut in the wood
+	niche_horizontal_offest=(len(niche)!=2)?0:Compute_niche_height(niche)*tan(abs(niche_angle));
+	niche_horizontal_width=niche_horizontal_offest+2*cut_length+niche_width;
+	position_niche_left=(niche_position > 1.0)?niche_position:(shelf_length-niche_horizontal_width)*niche_position+((niche_angle>0)?niche_horizontal_offest:0);
+	position_niche_right=position_niche_left+niche_width+cut_length;
+	
+	ERROR="ERROR: Niche does not fit inside piece of furniture, change one of: niche angle, position or width, or bookshelf width";
+	assert(niche_horizontal_width<=shelf_length, ERROR);
+	if(niche_angle>0){
+		assert(position_niche_left-niche_horizontal_offest>=0, ERROR);
+		assert(position_niche_right+cut_length<=shelf_length*1.0001, ERROR);
+	}else{
+		assert(position_niche_left>=0, ERROR);
+		assert(position_niche_left+niche_horizontal_width<=shelf_length*1.001, ERROR);
+	}
 	
 	shelf_extra_length=shelf_thickness*tan(niche_angle); //Add a bit of extra to allow the angled cut
 	function Compute_niche_left_shelf(level) = position_niche_left-Compute_niche_shelves_height(level)*tan(niche_angle)+(niche_angle<0?0:shelf_extra_length);
-	function Compute_niche_right_shelf(level) = shelf_length-position_niche_right-horizontal_niche_offset+Compute_niche_shelves_height(level)*tan(niche_angle)+((niche_angle<0)?-shelf_extra_length:0);
+	function Compute_niche_right_shelf(level) = shelf_length-position_niche_right-cut_length+Compute_niche_shelves_height(level)*tan(niche_angle)+((niche_angle<0)?-shelf_extra_length:0);
 	
 	translate([side_thickness, 0, 0]){
 		//Use cabinet structure
@@ -72,9 +84,9 @@ module bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot
 
 				translate([position_niche_right, 0, Compute_shelf_height(niche[0])+shelf_thickness]) rotate([0, -90-niche_angle, 0]) translate([0, 0, -shelf_thickness]) board_lightWood(niche_side_length, shelf_depth, shelf_thickness, "niche right");
 			}else{
-				translate([position_niche_left+horizontal_niche_offset, 0, Compute_shelf_height(niche[0])+shelf_thickness]) rotate([0, -90-niche_angle, 0]) board_lightWood(niche_side_length, shelf_depth, shelf_thickness, "niche left");
+				translate([position_niche_left+cut_length, 0, Compute_shelf_height(niche[0])+shelf_thickness]) rotate([0, -90-niche_angle, 0]) board_lightWood(niche_side_length, shelf_depth, shelf_thickness, "niche left");
 
-				translate([position_niche_right+horizontal_niche_offset, 0, Compute_shelf_height(niche[0])+shelf_thickness]) rotate([0, -90-niche_angle, 0]) board_lightWood(niche_side_length, shelf_depth, shelf_thickness, "niche right");
+				translate([position_niche_right+cut_length, 0, Compute_shelf_height(niche[0])+shelf_thickness]) rotate([0, -90-niche_angle, 0]) board_lightWood(niche_side_length, shelf_depth, shelf_thickness, "niche right");
 			}
 		}
 		
@@ -92,7 +104,7 @@ module bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot
 				translate([0, 0, ground_distance]) board_lightWood(Compute_niche_left_shelf(level), shelf_depth, shelf_thickness, str("shelf level ",level," left side"));
 				
 				//Right shelf
-				translate([Compute_niche_left_shelf(level)+niche_width+2*horizontal_niche_offset+((niche_angle<0)?shelf_extra_length:-shelf_extra_length), -1, ground_distance]) board_lightWood(Compute_niche_right_shelf(level), shelf_depth, shelf_thickness, str("shelf level ",level," left side"));
+				translate([Compute_niche_left_shelf(level)+niche_width+2*cut_length+((niche_angle<0)?shelf_extra_length:-shelf_extra_length), -1, ground_distance]) board_lightWood(Compute_niche_right_shelf(level), shelf_depth, shelf_thickness, str("shelf level ",level," left side"));
 			}else{
 				translate([0, 0, ground_distance]) board_lightWood(shelf_length, shelf_depth, shelf_thickness, str("shelf level ",level));
 			}
@@ -106,7 +118,7 @@ module bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot
 				//Draw books on right
 				right_books_length=(niche_angle>=0)?Compute_niche_right_shelf(level):Compute_niche_right_shelf(level+1);
 				horizontal_book_offset=Compute_niche_right_shelf(level)-right_books_length;
-				translate([Compute_niche_left_shelf(level)+niche_width+2*horizontal_niche_offset+((niche_angle<0)?shelf_extra_length:-shelf_extra_length)+horizontal_book_offset, shelf_depth, ground_distance+shelf_thickness]) books(right_books_length, available_depth-8, available_depth-3, shelves_height[level]-5, shelves_height[level]-1,  1, 3);
+				translate([Compute_niche_left_shelf(level)+niche_width+2*cut_length+((niche_angle<0)?shelf_extra_length:-shelf_extra_length)+horizontal_book_offset, shelf_depth, ground_distance+shelf_thickness]) books(right_books_length, available_depth-8, available_depth-3, shelves_height[level]-5, shelves_height[level]-1,  1, 3);
 			}else{
 				translate([0, shelf_depth, ground_distance+shelf_thickness]) books(shelf_length, available_depth-8, available_depth-3, shelves_height[level]-5, shelves_height[level]-1,  1, 3);
 			}
@@ -126,7 +138,7 @@ module bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot
 				//Place les livres de droite
 				right_books_length=(niche_angle>=0)?Compute_niche_right_shelf(0):Compute_niche_right_shelf(1);
 				horizontal_book_offset=Compute_niche_right_shelf(0)-right_books_length;
-				translate([niche_position+niche_width+2*horizontal_niche_offset+((niche_angle<0)?shelf_extra_length:0)+horizontal_book_offset, shelf_depth, Compute_height_bottom_shelf()]) books(right_books_length, available_depth-8, available_depth-3, shelves_height[0]-5, shelves_height[0]-1,  1, 3);
+				translate([niche_position+niche_width+2*cut_length+((niche_angle<0)?shelf_extra_length:0)+horizontal_book_offset, shelf_depth, Compute_height_bottom_shelf()]) books(right_books_length, available_depth-8, available_depth-3, shelves_height[0]-5, shelves_height[0]-1,  1, 3);
 			}else{
 				translate([0, shelf_depth, Compute_height_bottom_shelf()]) books(shelf_length, available_depth-8, available_depth-3, shelves_height[0]-5, shelves_height[0]-1,  1, 3);
 			}
@@ -134,9 +146,9 @@ module bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot
 	}
 }
 
-bookshelf_straight(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, niche=[2,6], niche_width=34, niche_angle=25, niche_position=0.5, add_doors=true, door_covering=3, door_recess=3);
+bookshelf_straight(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, niche=[2,6], niche_width=34, niche_angle=20, niche_position=0.1, add_doors=true, door_covering=3, door_recess=3);
 
-translate([190, 0, 0]) bookshelf_straight(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, niche=[0,6], niche_width=34, niche_angle=-25, niche_position=30);
+translate([190, 0, 0]) bookshelf_straight(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, niche=[0,6], niche_width=34, niche_angle=-25, niche_position=25);
 
 translate([380, 0, 0]) bookshelf_straight(shelves_height=[40, 36, 32, 32, 32, 32], bookshelf_width=170, bookshelf_depth=37, foot_height=5, side_thickness=2, back_thickness=1.5, shelf_thickness=2, add_doors=true, door_covering=3, door_recess=3);
 
