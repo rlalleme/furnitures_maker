@@ -9,6 +9,7 @@ List of files
 | sample_book          | Generate random books, for better visualisation    |
 | cabinet              | Define the outer 'shell' of a cabinet              |
 | bookshelf_straight   | Bookshelf, straight shelves, optional doors, niche |
+| bookshelf_diagonal   | Bookshelf, with tilted diagonal (with shelves)     |
 
 **If you open a file in openscad, it displays some examples, showcasing the capabilities of the file.**
 
@@ -36,7 +37,7 @@ Furnitures
 Bookshelf - Straight
 --------------------
 
-The 'bookshelf_straight' files allow to build a bookshelf with straight shelves. It offers optionnal doors on the lowest level, and the addition of a 'niche'.
+The 'bookshelf_straight' file allows to build a bookshelf with straight shelves. It offers optionnal doors on the lowest level, and the addition of a 'niche'.
 The figure bellow demonstrates a varietty of use cases:
 
 ![Samples of bookshelves](sample/bookshelf-straight.png)
@@ -58,3 +59,25 @@ A bookshelf has the following defition and parameters:
 * add_doors (def: false) - Trigger the option for sliding doors on bottom level
   * door_covering - Define the length that the door share: the front door, when closed will cover the back one from this distance
   * door_recess - Define how much the front door is recessed inside the bookshelf, the back door is considered touching the front one (no gap is considered here)
+
+
+
+Bookshelf - Diagonal
+--------------------
+
+The 'bookshelf_diagonal' file allows to build a bookshelf with a diagonal inside (with shelves).
+The figure bellow demonstrates a varietty of use cases:
+
+![Samples of bookshelves](sample/bookshelf-diagonal.png)
+![Samples of bookshelves (with empty shelves)](sample/bookshelf-diagonal-empty.png)
+
+A bookshelf has the following defition and parameters:
+`bookshelf_diagonal(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, diagonal_width, diagonal_angle, diagonal_position)`
+
+* shelves_height: List of shelves height, from bottom to top, (e.g. shelves_height=[30, 20, 10] defines a bookshelf with 3 shelves, of decreasing height a we go up)
+* bookshelf_width, bookshelf_depth: Define the bookshelf dimensions (the height is computed from the shelves height and foot height)
+* foot_height: Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
+* side_thickness, back_thickness, shelf_thickness: Define the wood thickness for the sides, back and shelves
+* diagonal_width: Defines the horizontal distance inside the diagonal
+* diagonal_angle: Angle for the diagonal, positive to tilt it to the left, negative for the right
+* diagonal_position: Between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%), any value above one will be interprated as a dimension (from left side)
