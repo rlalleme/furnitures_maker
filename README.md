@@ -45,7 +45,7 @@ The figure bellow demonstrates a varietty of use cases:
 _The bookshlef sample here is demonstrated with empty and full shelves, see the 'Functionnalities' above for more details._
 
 A bookshelf has the following defition and parameters:
-`bookshelf_with_niche(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, niche, niche_width, niche_angle, niche_position, add_doors, door_covering, door_recess)`
+`bookshelf_straight(shelves_height, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, niche, niche_width, niche_angle, niche_position, add_doors, door_covering, door_recess)`
 
 * shelves_height: List of shelves height, from bottom to top, (e.g. shelves_height=[30, 20, 10] defines a bookshelf with 3 shelves, of decreasing height a we go up)
 * bookshelf_width, bookshelf_depth: Define the bookshelf dimensions (the height is computed from the shelves height and foot height)
