@@ -10,6 +10,7 @@ List of files
 | cabinet              | Define the outer 'shell' of a cabinet              |
 | bookshelf_straight   | Bookshelf, straight shelves, optional doors, niche |
 | bookshelf_diagonal   | Bookshelf, with tilted diagonal (with shelves)     |
+| bookshelf_cells      | Bookshelf, with inner walls (several options)      |
 
 **If you open a file in openscad, it displays some examples, showcasing the capabilities of the file.**
 
@@ -81,3 +82,44 @@ A bookshelf has the following defition and parameters:
 * diagonal_width: Defines the horizontal distance inside the diagonal
 * diagonal_angle: Angle for the diagonal, positive to tilt it to the left, negative for the right
 * diagonal_position: Between 0 and 1 will be interprated as percentage (e.g. 0.3 = 30%) of the available space, any value above one will be interprated as a dimension (from left side)
+
+
+
+Bookshelf - Cells/Rack
+----------------------
+
+The 'bookshelf_celss' file allows to build a bookshelf with a inner walls and optional border. It has three functions depending on the level of control you want.
+The figure bellow demonstrates a varietty of use cases:
+
+![Samples of bookshelves](sample/bookshelf-cells.png)
+![Samples of bookshelves (with empty shelves)](sample/bookshelf-cells-empty.png)
+
+Defines a bookshelf with straight shelves and inner walls with the following defition and parameters:
+`bookshelf_cells(shelves_height, shelves_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, border_height)`
+
+* shelves_height: List of shelves height, from bottom to top, (e.g. shelves_height=[30, 20, 10] defines a bookshelf with 3 shelves, of decreasing height a we go up)
+* shelves_width: List of shelves width, defines the bookshelf_width
+* bookshelf_depth: Define the bookshelf dimensions (the height is computed from the shelves height and foot height, the width is computed from the shelves width)
+* foot_height: Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
+* side_thickness, back_thickness, shelf_thickness: Define the wood thickness for the sides, back and shelves
+* border_height: (Optional) Place a border in front of each cell (vertically and horizontally), 0 will remove the border. Borders are centered vertically, bottom aligned horizonyally.
+
+Defines a bookshelf with straight shelves and inner walls (cells all have equal width) with the following defition and parameters:
+`bookshelf_even_width_cells(shelves_height, number_inner_walls, bookshelf_width, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, border_height)`
+
+* shelves_height - List of shelves height, from bottom to top, (e.g. shelves_height=[30, 20, 10] defines a bookshelf with 3 shelves, of decreasing height a we go up)
+*  number_inner_walls - Number of inner-wall to place
+* bookshelf_width, bookshelf_depth: Define the bookshelf dimensions (the height is computed from the shelves height and foot height)
+* foot_height - Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
+* side_thickness, back_thickness, shelf_thickness: Define the wood thickness for the sides, back and shelves
+* border_height - (Optional) Place a border in front of each cell (vertically and horizontally), 0 will remove the border. Borders are centered vertically, bottom aligned horizonyally.
+
+Defines a bookshelf with straight shelves and inner walls (cells all have equal width and height) with the following defition and parameters:
+`bookshelf_even_cells(number_shelves, number_inner_walls, bookshelf_width, bookshelf_height, bookshelf_depth, foot_height, side_thickness, back_thickness, shelf_thickness, border_height)`
+
+* number_shelves - Number of shelves (lowest level included)
+* number_inner_walls - Number of inner-wall to place
+* bookshelf_width, bookshelf_depth, bookshelf_depth: Define the bookshelf dimensions
+* foot_height - Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
+* side_thickness, back_thickness, shelf_thickness: Define the wood thickness for the sides, back and shelves
+* border_height - (Optional) Place a border in front of each cell (vertically and horizontally), 0 will remove the border. Borders are centered vertically, bottom aligned horizonyally.
