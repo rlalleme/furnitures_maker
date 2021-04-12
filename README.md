@@ -1,3 +1,12 @@
+Description
+-----------
+
+This project provides a set of tools to design and customise pieces of furnitures. It uses OpenScad, a scripting CAD modeler.
+
+The first section lists the files and their role.
+The second section presents the general functionnalitities avaiable.
+The last section present each individual piece of furniture and its controls.
+
 List of files
 -------------
 
@@ -18,6 +27,14 @@ List of files
 Functionnalities
 ----------------
 
+### Furniture customiser
+
+In the 'sample' directory, there is a "customiser" version of each piece of furniture, its goal is to allow easier design: it uses OpenScad customiser to allow you to modify and customise your furniture with requiring code modification.
+
+![Sample of customiser](img/bookshelf-straight-customiser.png)
+
+### Sample books and wood
+
 The 'sample_book' file allows to draw book on the shelves. Thanks to its definition it should appear in the openscad customiser (from version 2019.05 and later).
 
 If you want to customise/create your own file and want to have the same option, you should define the following variable at the top of your main file (before any module line):
@@ -32,8 +49,8 @@ If you want to customise/create your own file and want to have the same option, 
 	//... rest of the code ...
 ```
 
-Furnitures
-==========
+Furniture
+=========
 
 Bookshelf - Straight
 --------------------
