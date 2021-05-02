@@ -4,8 +4,9 @@ Description
 This project provides a set of tools to design and customise pieces of furnitures. It uses OpenScad, a scripting CAD modeler.
 
 The first section lists the files and their role.
-The second section presents the general functionnalitities avaiable.
-The last section present each individual piece of furniture and its controls.
+The second section presents the general functionnalitities available.
+The following section presents each individual piece of furniture and its controls.
+The final section presents the wall utility, that allows to build room and place furniture inside.
 
 List of files
 -------------
@@ -20,6 +21,7 @@ List of files
 | bookshelf_straight   | Bookshelf, straight shelves, optional doors, niche |
 | bookshelf_diagonal   | Bookshelf, with tilted diagonal (with shelves)     |
 | bookshelf_cells      | Bookshelf, with inner walls (several options)      |
+| room                 | Utility to draw room and palce furniture inside    |
 
 **If you open a file in openscad, it displays some examples, showcasing the capabilities of the file.**
 
@@ -141,3 +143,91 @@ Defines a bookshelf with straight shelves and inner walls (cells all have equal 
 * foot_height - Defines the height of the foot: along the length of the cabinet, under the bottom shelf a bar help stabilise and strengthen the cabinet
 * side_thickness, back_thickness, shelf_thickness: Define the wood thickness for the sides, back and shelves
 * border_height - (Optional) Place a border in front of each cell (vertically and horizontally), 0 will remove the border. Borders are centered vertically, bottom aligned horizonyally.
+
+
+
+Room utility
+============
+
+The room utility is composed of the following tools:
+* walls - To build walls
+* translate_on_wall - (and translate_on_wall_end) Allows to place furniture in a room using walls as reference
+* create_fixed_opening - Allows to create an opening in a given wall
+* create_panel_opening - Allows to create an opening, closed by a single panel (e.g. room door)
+* create_double_panel_opening - Allows to create an opening, closed by a two panels
+* create_custom_opening - Allows to create an opening with any shape
+
+For details on each function please refer to the code. This section will only present a proposed workflow to use the room utility.
+
+![Samples of bookshelves](img/room.png)
+
+The figure shows an example of a 2-rooms flat, with a sample piece of furniture. It also displays the swept volume for the windows and doors panels.
+
+Step 1 - Create the walls
+-------------------------
+
+Create a wall list, use the data-structures builder and the 'walls' module to place the walls.
+You can start by a single wall, and add them one by one.
+
+	walls=[[wall1_length, wall1_angle, wall1_thickness], [wall2... ], ...]
+	walls_angle = Build_walls_angle(walls);
+	walls_origin = Build_walls_origin(walls, walls_angle);
+	walls_end = Build_walls_end(walls, walls_angle, walls_origin);
+
+	walls(walls, walls_angle, walls_origin, default_walls_height=250);
+
+Customise the walls until you are happy.
+
+Step 2 - Place the opening
+--------------------------
+Again, one by one, add line above the 'walls' module to create the different openings
+
+	walls=... (and walls_angle, walls_origin, walls_end)
+
+	+ create_fixed_opening(walls, walls_angle, walls_origin, <wall_id>, [<offset on wall>, <height>], [<width>, <height>])
+	+ create_fixed_opening(walls, walls_angle, walls_origin, <wall_id_bis>, [<offset on wall bis>, <height bis>], [<width bis>, <height bis>])
+	walls(walls, walls_angle, walls_origin, default_walls_height=250);
+
+N.B. Please note that the "create_..._opening()" do not have a ';' at the end of the line, since they are meant to stack with the wall.
+
+Step 3 - Place the furniture
+----------------------------
+Place the furniture in the newly created room.
+
+	walls=... (and walls_angle, walls_origin, walls_end)
+
+	create_fixed_opening(walls, walls_angle, walls_origin, <wall_id>, [<offset on wall>, <height>], [<width>, <height>])
+	create_fixed_opening(walls, walls_angle, walls_origin, <wall_id_bis>, [<offset on wall bis>, <height bis>], [<width bis>, <height bis>])
+	walls(walls, walls_angle, walls_origin, default_walls_height=250);
+
+	+ translate_on_wall(walls_angle, walls_origin, wall_id){
+	+	... The furniture on wall 'wall_id', they can be moved around on the wall with translate operation (relative to the bottom left corner)
+	+	translate([...]) rotate([...]) ...piece_of_furniture...
+	+	translate([...]) rotate([...]) ...other_piece_of_furniture...
+	+ }
+
+	+ translate_on_wall(walls_angle, walls_origin, wall_id_bis){
+	+	... Place furniture on wall_id_bis
+	+ }
+
+Step 4 - Place the room
+-----------------------
+Now that the room is ready, place it relative to other rooms.
+
+	walls=... (and walls_angle, walls_origin, walls_end)
+
+	+ translate([...]) rotate([...]) {
+		create_fixed_opening(walls, walls_angle, walls_origin, <wall_id>, [<offset on wall>, <height>], [<width>, <height>])
+		create_fixed_opening(walls, walls_angle, walls_origin, <wall_id_bis>, [<offset on wall bis>, <height bis>], [<width bis>, <height bis>])
+		walls(walls, walls_angle, walls_origin, default_walls_height=250);
+
+		translate_on_wall(walls_angle, walls_origin, wall_id){
+			... Place furntiure on wall_id
+		}
+
+		translate_on_wall(walls_angle, walls_origin, wall_id_bis){
+			... Place furniture on wall_id_bis
+		}
+	+ }
+
+Now you can repeat the process for all the other rooms
